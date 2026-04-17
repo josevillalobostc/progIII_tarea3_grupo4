@@ -5,6 +5,5 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_executable(Tarea3 main.cpp 
                Entity.h
-               Entity.cpp
                CommandCenter.h
                CommandCenter.cpp)
