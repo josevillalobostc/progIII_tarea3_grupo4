@@ -12,6 +12,7 @@ class Entity {
     string nombre;
     int nivel;
     vector<string> recursos;
+    string estado;
 public:
     double get_posx(){ return posx;}
     double get_posy(){ return posy;}
@@ -20,6 +21,7 @@ public:
     string get_nombre(){ return nombre;}
     int get_nivel(){ return nivel;}
     vector<string> get_recursos() {return recursos;}
+    string get_estado(){ return estado;}
     
     void set_posx(double x) { posx = x;}
     void set_posy(const double &y) { posy = y;}
@@ -28,6 +30,7 @@ public:
     void set_nivel(const int& n) { nivel = n; }
     void set_nombre(const string& nomb) { nombre = nomb;}
     void agregar_recurso(const string& rec){ recursos.push_back(rec);}
+    string set_estado(const string& status){ estado=status;}
     
     string get_diff(const Entity& other) const {
             string diff = "";
