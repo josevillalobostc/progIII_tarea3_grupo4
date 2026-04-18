@@ -4,7 +4,7 @@ using namespace std;
 
 void CommandCenter::registerCommand(const std::string& name, Command cmd) {
     map<string, Command>::iterator it = commands.find(name);
-    if (it != commands.end()){
+    if (it == commands.end()){
         commands.insert({name,cmd});
     } else {
         cerr << "Error: El comando ya existe\n";
@@ -14,12 +14,17 @@ void CommandCenter::registerCommand(const std::string& name, Command cmd) {
 
 void CommandCenter::execute(const std::string& name, const std::list<std::string>& args) {
     map<string, Command>::iterator it = commands.find(name);
+    Entity antes = entity;
+    
     if( it != commands.end()){
         it -> second(args);
     } else {
         cerr << "Error: El comando no existe\n";
         return;
     }
+    string cambios = "Comando " + name + "ejecutado\n"+ entity.get_diff(antes);
+    history.push_front(cambios);
+    
 }
 
 void CommandCenter::removeCommand(const std::string& name) {
@@ -38,27 +43,33 @@ void CommandCenter::registerMacro(
 ) {
     map<string, list<pair<string, list<string>>>>::iterator it = macros.find(name);
     
-    if(it != macros.end()){
+    if(it == macros.end()){
         macros.insert(make_pair(name,steps));
+    } else {
+        cerr << "Error: Ya existe un macro con el mismo nombre\n";
     }
 }
 
 void CommandCenter::executeMacro(const std::string& name) {
     map<string, list<pair<string, list<string>>>>::iterator it = macros.find(name);
-    map<string, Command>::iterator funcIt;
+
     if(it != macros.end()){
-        for(pair<string, list<string>> step : it->second){
-            funcIt = commands.find(step.first);
-            
-            if (funcIt == commands.end()) {
-                std::cerr << "Error en macro " << name << ", no existe el comando " << step.first << endl;
+        list<pair<string, list<string>>>::iterator stepIt;
+        for(stepIt = it -> second.begin(); stepIt != it->second.end(); ++stepIt){
+            if ( commands.find(name) == commands.end()) {
+                std::cerr << "Error: En la macro " << name << ", no existe el comando " << stepIt -> first << endl;
                 return;
             }
-            funcIt -> second(step.second);            
+            this -> execute(stepIt -> first, stepIt -> second);          
         }
+    } else {
+        cerr << "Error: No existe ninguna macro con dicho nombre\n";
     }
 }
 
 void CommandCenter::printHistory() const {
-
+    list<string>::const_iterator it;
+    for(it = history.begin(); it!=history.end(); ++it){
+        cout << *it << endl;
+    }
 }
