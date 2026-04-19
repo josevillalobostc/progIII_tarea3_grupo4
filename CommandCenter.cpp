@@ -7,7 +7,7 @@ void CommandCenter::registerCommand(const std::string& name, Command cmd) {
     if (it == commands.end()){
         commands.insert({name,cmd});
     } else {
-        cerr << "Error: El comando ya existe\n";
+        cerr << "Error: El comando "<< name <<" ya existe\n";
         return;
     }
 }
@@ -22,8 +22,12 @@ void CommandCenter::execute(const std::string& name, const std::list<std::string
         cerr << "Error: El comando no existe\n";
         return;
     }
-    string cambios = "Comando " + name + "ejecutado\n"+ entity.get_diff(antes);
-    history.push_front(cambios);
+    string comando = name;
+    for(auto it = args.begin(); it != args.end(); ++it){
+        comando += " " + *it;
+    }
+    string cambios = "Comando " + comando + " ejecutado\n"+ entity.get_diff(antes) + "\n";
+    history.push_back(cambios);
     
 }
 
@@ -56,7 +60,7 @@ void CommandCenter::executeMacro(const std::string& name) {
     if(it != macros.end()){
         list<pair<string, list<string>>>::iterator stepIt;
         for(stepIt = it -> second.begin(); stepIt != it->second.end(); ++stepIt){
-            if ( commands.find(name) == commands.end()) {
+            if ( commands.find(stepIt -> first) == commands.end()) {
                 std::cerr << "Error: En la macro " << name << ", no existe el comando " << stepIt -> first << endl;
                 return;
             }
