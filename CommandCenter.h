@@ -18,10 +18,12 @@ class CommandCenter{
 public:
     explicit CommandCenter(Entity& _entity) : entity(_entity) {}
     
+    // comandos
     void registerCommand(const std::string& name, Command cmd);
     void execute(const std::string& name, const std::list<std::string>& args);
     void removeCommand(const std::string& name);
     
+    // macros
     void registerMacro(
         const std::string& name, 
         const std::list<std::pair<std::string, std::list<std::string>>>& steps
@@ -29,6 +31,7 @@ public:
     
     void executeMacro(const std::string& name);
     
+    // historial
     void printHistory() const;
     
     
